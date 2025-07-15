@@ -23,5 +23,4 @@ public class CloudController {
     public ResponseEntity<List<Integer>> upload(@RequestBody CloudDto cloudDto) {
         return ResponseEntity.ok(cloudService.upload(cloudDto));
     }
-
 }
