@@ -6,7 +6,6 @@ import com.mscloud.model.LisReportsInfoDto;
 import com.mscloud.model.LocalDto;
 import com.mscloud.model.PatientInfoDto;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
