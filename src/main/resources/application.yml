@@ -4,9 +4,9 @@ spring:
 
 #password will be hide
   datasource:
-    url: jdbc:mysql://78.47.233.52:3306/medsoft_demo
-    username: app_java_user
-    password: GOr0dJU1x86KAV3T!-283@1
+    url: jdbc:mysql://78.47.233.52:3306/cloud_lis_reports
+    username: app_java_user_cloud
+    password: GOr0dJU1x86KAV3T!-283@2
     hikari:
       maximum-pool-size: 5
   jpa:
@@ -14,4 +14,3 @@ spring:
     show-sql: true
     properties:
       hibernate.format_sql: false
-
