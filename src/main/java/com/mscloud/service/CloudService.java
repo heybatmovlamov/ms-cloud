@@ -33,8 +33,8 @@ public class CloudService {
                         lisDto.getBlankId(),
                         lisDto.getCooperativeId(),
                         lisDto.getFileName(),
-                        LocalDateTime.now(),
-                        LocalDateTime.now()
+                        lisDto.getRegistrationTime().toLocalDateTime(),
+                        lisDto.getApproveTime().toLocalDateTime()
                 );
                 resultList.add(resultId);
             }
