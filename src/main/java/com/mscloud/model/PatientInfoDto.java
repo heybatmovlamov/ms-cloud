@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class PatientInfoDto {
 
     private String patientName;
-    private Integer secretCode;
-    private Integer qrCode;
+    private String secretCode;
+    private String qrCode;
 }
