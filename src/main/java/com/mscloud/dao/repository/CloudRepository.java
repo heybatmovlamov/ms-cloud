@@ -1,7 +1,6 @@
 package com.mscloud.dao.repository;
 
 import com.mscloud.dao.entity.PatientEntity;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
