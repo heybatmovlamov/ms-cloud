@@ -17,39 +17,58 @@ public class RequestValidationInterceptor implements HandlerInterceptor {
     );
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
+
         String clinicId = request.getHeader("X-Clinic-Id");
-        String publicKey = request.getHeader("X-Public-Key");
-        String encryptedKey = request.getHeader("X-Encrypted-Key");
         String timestamp = request.getHeader("X-Timestamp");
         String nonce = request.getHeader("X-Nonce");
+        String receivedPublicKey = request.getHeader("X-Public-Key");
+        String receivedEncryptedKey = request.getHeader("X-Encrypted-Key");
 
         log.info("🛡️ Klinikadan gələn sorğu:");
         log.info("Clinic ID        : {}", clinicId);
         log.info("Timestamp        : {}", timestamp);
         log.info("Nonce            : {}", nonce);
-        log.info("Public Key       : {}", publicKey);
-        log.info("Encrypted Key    : {}", encryptedKey);
+        log.info("Public Key       : {}", receivedPublicKey);
+        log.info("Encrypted Key    : {}", receivedEncryptedKey);
 
-
-
-        if (clinicId == null || publicKey == null || encryptedKey == null || timestamp == null || nonce == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing security headers");
+        if (clinicId == null || timestamp == null || nonce == null || receivedPublicKey == null ||
+                receivedEncryptedKey == null) {
+            log.warn("❌ Missing headers from clinic {}", clinicId);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing headers");
             return false;
         }
 
         String privateKey = clinicSecrets.get(clinicId);
         if (privateKey == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Clinic not authorized");
+            log.warn("❌ Unknown clinic: {}", clinicId);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized clinic");
             return false;
         }
 
-        String expectedEncryptedKey = SecurityUtils.generateHmac(privateKey, publicKey);
-        if (!expectedEncryptedKey.equals(encryptedKey)) {
+        // 🧠 CLOUD TƏRƏFDƏ PUBLIC KEY-i YENİDƏN HESABLA
+        String calculatedPublicKey = SecurityUtils.generatePublicKey(clinicId, timestamp, nonce);
+
+        // 1️⃣ PUBLIC KEY MÜQAYİSƏ
+        if (!calculatedPublicKey.equals(receivedPublicKey)) {
+            log.warn("❌ PublicKey mismatch for clinic {}: expected={}, received={}", clinicId, calculatedPublicKey,
+                    receivedPublicKey);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Public key mismatch");
+            return false;
+        }
+
+        // 2️⃣ ENCRYPTED KEY DOĞRULAMA
+        String expectedEncryptedKey = SecurityUtils.generateHmac(privateKey, calculatedPublicKey);
+
+        if (!expectedEncryptedKey.equals(receivedEncryptedKey)) {
+            log.warn("❌ Encrypted key mismatch for clinic {}: expected={}, received={}", clinicId, expectedEncryptedKey,
+                    receivedEncryptedKey);
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Signature mismatch");
             return false;
         }
 
+        log.info("✅ Signature validation passed for clinic {}", clinicId);
         return true;
     }
 }
