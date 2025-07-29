@@ -1,10 +1,8 @@
 package com.mscloud.service;
 
 import com.mscloud.dao.repository.CloudRepository;
-import com.mscloud.model.CloudDto;
-import com.mscloud.model.LisReportsInfoDto;
-import com.mscloud.model.LocalDto;
-import com.mscloud.model.PatientInfoDto;
+import com.mscloud.model.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +38,14 @@ public class CloudService {
             }
         }
         return resultList;
+    }
+
+    public List<?> getLisResultBySecretAndQrCode(String secretCode, String qrCode) {
+        return repository.getLisResultBySecretAndQrCode(secretCode, qrCode);
+    }
+
+    public PatientLisFileDto getLisFileByReportUidAndSecretAndQrCode(Integer reportUid, String secretCode, String qrCode) {
+        return repository.getLisFileByReportUidAndSecretAndQrCode(reportUid, secretCode,qrCode);
     }
 
 }
