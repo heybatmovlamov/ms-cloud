@@ -4,7 +4,7 @@ spring:
 
 #password will be hide
   datasource:
-    url: jdbc:mysql://78.47.233.52:3306/cloud_lis_reports
+    url: jdbc:mysql://78.47.233.52:3306/cloud_lis_reports?zeroDateTimeBehavior=convertToNull
     username: app_java_user_cloud
     password: GOr0dJU1x86KAV3T!-283@2
     hikari:
