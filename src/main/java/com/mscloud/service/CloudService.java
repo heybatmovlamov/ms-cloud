@@ -46,18 +46,34 @@ public class CloudService {
 
 
 
-
     public List<LisResultDto> getLisResultBySecretAndQrCode(String secretCode, String qrCode) {
         List<Object[]> result = repository.getLisResultRaw(secretCode, qrCode);
 
-        if (result.isEmpty() || isNotFound(result.get(0))) {
+        // Əgər nəticə boşdursa və ya yalnız -1-lərdən ibarətdirsə
+        if (result == null || result.isEmpty() || result.stream().allMatch(this::isNotFound)) {
             return Collections.emptyList();
         }
 
         return result.stream()
+                .filter(row -> isValidRow(row))
                 .map(this::mapToLisResultDto)
                 .collect(Collectors.toList());
     }
+    private boolean isValidRow(Object[] row) {
+        return row.length >= 9 && !(row.length == 1 && row[0] instanceof Integer && ((Integer) row[0]) == -1);
+    }
+
+//    public List<LisResultDto> getLisResultBySecretAndQrCode(String secretCode, String qrCode) {
+//        List<Object[]> result = repository.getLisResultRaw(secretCode, qrCode);
+//
+//        if (result.isEmpty() || isNotFound(result.get(0))) {
+//            return Collections.emptyList();
+//        }
+//
+//        return result.stream()
+//                .map(this::mapToLisResultDto)
+//                .collect(Collectors.toList());
+//    }
 
     private boolean isNotFound(Object[] row) {
         return row.length == 1 && row[0] instanceof Integer && ((Integer) row[0]) == -1;
