@@ -43,6 +43,10 @@ public class CloudService {
         return resultList;
     }
 
+
+
+
+
     public List<LisResultDto> getLisResultBySecretAndQrCode(String secretCode, String qrCode) {
         List<Object[]> result = repository.getLisResultRaw(secretCode, qrCode);
 
@@ -76,6 +80,12 @@ public class CloudService {
                 .lisFile((String) row[8])
                 .build();
     }
+
+
+
+
+
+
 
     public PatientLisFileDto getLisFileByReportUidAndSecretAndQrCode(Integer reportUid, String secretCode, String qrCode) {
         return repository.getLisFileByReportUidAndSecretAndQrCode(reportUid, secretCode,qrCode);
