@@ -16,4 +16,5 @@ public class LisResultDto {
     private Integer patientId;
     private String qrCode;
     private String lisFile;
+
 }
